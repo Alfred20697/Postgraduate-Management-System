@@ -1,0 +1,37 @@
+DDL
+Please follow the flow/numbering. Run query one by one.
+
+1.Create database
+create database PMS
+
+2.Connection to database
+connect to PMS
+
+3.Create table
+create table course(course_id char(6) not null,course_name varchar(50) not null,total_credit_hour int not null,primary key(course_id))
+
+create table lecturer(lecturer_id char(8) not null,lecturer_password varchar(30) not null,lecturer_name varchar(30) not null,lecturer_gender char(1),lecturer_race varchar(10),lecturer_address varchar(100),lecturer_contact varchar(12),lecturer_email varchar(50),primary key(lecturer_id) )
+
+create table subject(subject_id char(8) not null,subject_name varchar(50) not null,subject_description varchar(100),credit_hour int not null,subject_cost decimal(9,2) not null,course_id char(6) not null,lecturer_id char(8) not null,primary key(subject_id),foreign key(course_id) references course,foreign key(lecturer_id) references lecturer)
+
+create table student(student_id char(10) not null,student_password varchar(30) not null,student_name varchar(30) not null,student_gender char(1),student_race varchar(10),student_address varchar(100),student_contact varchar(12), student_email varchar(50),student_acc_no varchar(15),course_id char(6) not null, lecturer_id char(8), primary key(student_id),foreign key(course_id) references course)
+
+create table admin(admin_id char(6) not null,admin_password varchar(30) not null,admin_name varchar(30) not null,admin_gender char(1),admin_race varchar(10),admin_address varchar(100),admin_contact varchar(12),admin_email varchar(50),primary key(admin_id))
+
+create table notification(notification_id char(10) not null,notification_type varchar(30) not null,notification_description varchar(500),notification_date date not null,admin_id char(6) not null,primary key(notification_id),foreign key(admin_id) references admin)
+
+create table invoice(invoice_id char(10) not null,amount_to_pay decimal(9,2) not null,invoice_date date not null,invoice_description varchar(500),payment_status varchar(20) not null,admin_id char(6) not null,student_id char(10) not null,primary key(invoice_id),foreign key(admin_id) references admin,foreign key(student_id) references student)
+
+create table progress_report(report_id char(8) not null,report_date date not null,progress varchar(500),student_id char(10) not null,lecturer_id char(8) not null,primary key(report_id), foreign key(student_id) references student,foreign key(lecturer_id) references lecturer)
+
+create table trimester(trimester_id char(10) not null,student_id char(10) not null,subject_id char(8) not null,primary key(trimester_id),foreign key(student_id) references student,foreign key(subject_id) references subject)
+
+create table exam_result(exam_result_id char(10) not null,grade char(1) not null,cgpa decimal(3,2) not null,gpa decimal(3,2) not null,total_credit_hour int not null,trimester_id char(10) not null,primary key(exam_result_id),foreign key(trimester_id) references trimester)
+
+create table invoice_subject(invoice_id char(10) not null,subject_id char(8) not null,primary key(invoice_id, subject_id),foreign key(invoice_id) references invoice,foreign key(subject_id) references subject)
+
+create table feedback(feedback_id char(8) not null,feedback_title varchar(20) not null,feedback_content varchar(500),feedback_approval int, lecturer_id char(8), student_id char(10) not null,primary key(feedback_id),foreign key(student_id) references student)
+
+create table timetable(timetable_id char(10) not null, timetable_date date not null, timetable_time char(5) not null, timetable_seat int not null, trimester_id char(10) not null, primary key(timetable_id), foreign key(trimester_id) references trimester)
+
+create table counter(counter_id varchar(10) not null, record int, primary key(counter_id))
